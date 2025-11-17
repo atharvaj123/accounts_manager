@@ -137,13 +137,12 @@ app_license = "mit"
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+    "Expense Entry": {
+        "before_save": "accounts_manager.expense_hooks.track_history"
+    }
+}
+
 
 # Scheduled Tasks
 # ---------------
@@ -175,7 +174,9 @@ app_license = "mit"
 # ------------------------------
 #
 # override_whitelisted_methods = {
-# 	"frappe.desk.doctype.event.event.get_events": "accounts_manager.event.get_events"
+# 	# "frappe.desk.doctype.event.event.get_events": "accounts_manager.event.get_events"
+#     "accounts_manager.google_sheets.sheet_sync.push_expense_to_sheet":
+#     "accounts_manager.google_sheets.sheet_sync.push_expense_to_sheet"
 # }
 #
 # each overriding function accepts a `data` argument;

@@ -1,0 +1,45 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-11-17 17:38:04.214500",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "tag",
+  "column_break_gtdy",
+  "tag_label"
+ ],
+ "fields": [
+  {
+   "fieldname": "tag",
+   "fieldtype": "Link",
+   "label": "Tag",
+   "options": "Tags"
+  },
+  {
+   "fieldname": "column_break_gtdy",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "tag_label",
+   "fieldtype": "Data",
+   "label": "Tag Label"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-11-17 17:38:31.855127",
+ "modified_by": "Administrator",
+ "module": "Accounts Manager",
+ "name": "Expense Tag",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
