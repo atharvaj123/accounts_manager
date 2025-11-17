@@ -1,15 +1,17 @@
-# apps/accounts_manager/accounts_manager/expense_hooks.py
 import frappe
 from frappe.utils import now_datetime
 
 def track_history(doc, method):
+    # Skip if document is new
     if doc.get("__islocal"):
         return
 
-    old_doc = frappe.get_doc("Expense Entry", doc.name)
+    old_doc = frappe.get_doc_before_save(doc)
+    if not old_doc:
+        return
 
     changes = []
-    monitor_fields = ["description", "amount", "posting_date", "expense_type", "remarks", "cost_center"]
+    monitor_fields = ["description", "amount", "posting_date", "expense_type", "remarks"]
 
     for f in monitor_fields:
         old_val = getattr(old_doc, f, None)

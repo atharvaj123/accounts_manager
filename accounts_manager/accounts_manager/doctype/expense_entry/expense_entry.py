@@ -2,33 +2,42 @@
 # For license information, please see license.txt
 
 import frappe
-from frappe.model.document import Document
-from accounts_manager.google_sheets.auth import get_google_service
+from frappe.utils import now_datetime
 
-class ExpenseEntry(Document):
-    
-    def push_to_google_sheet(self):
-        # No need to pass expense_name, use self
-        service = get_google_service()
+def track_history(doc, method):
+    # Skip if new document
+    if doc.get("__islocal"):
+        return
 
-        spreadsheet_id = "1ybHL9ja9W20B9Nl1MFLgd9WEA132RqgKsNWiUWv1Yqs"
-        sheet_name = "Sheet1"
+    try:
+        old_doc = frappe.get_doc(doc.doctype, doc.name)
+    except frappe.DoesNotExistError:
+        # Old document not found, likely new doc
+        return
 
-        values = [[
-            self.name,
-            self.posting_date.strftime("%Y-%m-%d") if self.posting_date else "",
-            self.description or "",
-            self.expense_type or "",
-            float(self.amount or 0)
-        ]]
+    if not old_doc:
+        return
 
-        body = {"values": values}
+    changes = []
+    monitor_fields = ["description", "amount", "posting_date", "expense_type", "remarks"]
 
-        service.spreadsheets().values().append(
-            spreadsheetId=spreadsheet_id,
-            range=sheet_name,
-            valueInputOption="USER_ENTERED",
-            body=body
-        ).execute()
+    for f in monitor_fields:
+        old_val = getattr(old_doc, f, None)
+        new_val = getattr(doc, f, None)
+        if (old_val or "") != (new_val or ""):
+            changes.append((f, old_val, new_val))
 
-        return "OK"
+    old_tags = [t.tag for t in old_doc.get("tags") or []]
+    new_tags = [t.tag for t in doc.get("tags") or []]
+    if old_tags != new_tags:
+        changes.append(("tags", ", ".join(old_tags), ", ".join(new_tags)))
+
+    for field_name, old_value, new_value in changes:
+        doc.append("history", {
+            "changed_on": now_datetime(),
+            "changed_by": frappe.session.user,
+            "field_name": field_name,
+            "old_value": frappe.as_json(old_value) if isinstance(old_value, (list, dict)) else (old_value or ""),
+            "new_value": frappe.as_json(new_value) if isinstance(new_value, (list, dict)) else (new_value or ""),
+            "notes": ""
+        })
