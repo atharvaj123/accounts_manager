@@ -5,3 +5,4 @@
 tags
 node_modules
 __pycache__google_sheets/credentials.json
+accounts_manager/google_sheets/credentials.json
