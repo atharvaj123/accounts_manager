@@ -2,11 +2,14 @@ import frappe
 from frappe.utils import now_datetime
 
 def track_history(doc, method):
-    # Skip if document is new
     if doc.get("__islocal"):
         return
 
-    old_doc = frappe.get_doc_before_save(doc)
+    try:
+        old_doc = frappe.get_doc(doc.doctype, doc.name)
+    except frappe.DoesNotExistError:
+        return
+
     if not old_doc:
         return
 

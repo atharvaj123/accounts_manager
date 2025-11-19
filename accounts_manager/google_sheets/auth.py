@@ -8,6 +8,7 @@ from google.auth.transport.requests import Request
 from frappe.utils import get_site_path
 
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
+logger = logging.getLogger(__name__)
 
 def get_google_service():
     creds = None
@@ -17,29 +18,27 @@ def get_google_service():
     try:
         if os.path.exists(token_path):
             creds = Credentials.from_authorized_user_file(token_path, SCOPES)
-            logging.info("Loaded Google API token from %s", token_path)
+            logger.info("Loaded token from %s", token_path)
 
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
-            logging.info("Refreshed Google API access token.")
+            logger.info("Refreshed access token.")
             with open(token_path, "w") as token_file:
                 token_file.write(creds.to_json())
 
         if not creds or not creds.valid:
             flow = InstalledAppFlow.from_client_secrets_file(creds_path, SCOPES)
-            # Detect headless environment; fallback to console auth if needed
             try:
                 creds = flow.run_local_server(port=0)
             except Exception as e:
-                logging.warning("Interactive auth failed, falling back to console: %s", e)
+                logger.warning(f"Interactive auth failed: {e}, fallback to console flow.")
                 creds = flow.run_console()
 
             with open(token_path, "w") as token_file:
                 token_file.write(creds.to_json())
-            logging.info("Obtained new Google API token.")
-
+            logger.info("Obtained new credentials and saved token.")
     except Exception as e:
-        logging.error("Failed to get Google Sheets credentials: %s", e)
+        logger.error(f"Failed to authenticate Google API: {e}")
         raise
 
     service = build("sheets", "v4", credentials=creds)
