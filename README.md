@@ -1,45 +1,26 @@
-<<<<<<< HEAD
-# accounts_manager
-=======
-### Accounts Manager
+# Accounts Manager
 
-Custom app to manage expenses and Google Sheets integration
+A custom Frappe application designed to simplify and automate expense tracking, reporting, and Google Sheets integration.  
+This app enhances ERPNext capabilities by allowing structured expense management with automated logs and optional external syncing.
 
-### Installation
+---
 
-You can install this app using the [bench](https://github.com/frappe/bench) CLI:
+## ✨ Features
+
+- 📌 Create and manage expense entries
+- 📊 Automated tracker with history logs
+- 🔗 Google Sheets integration for real-time expense syncing
+- 🛠 Configurable client-side and server-side validations
+- 📝 Custom DocTypes and UI enhancements
+- 🚀 Frappe/ERPNext compatible
+
+---
+
+## 📦 Installation
+
+Use the `bench` CLI to install the app:
 
 ```bash
-cd $PATH_TO_YOUR_BENCH
-bench get-app $URL_OF_THIS_REPO --branch develop
+cd frappe-bench
+bench get-app https://github.com/atharvaj123/accounts_manager --branch develop
 bench install-app accounts_manager
-```
-
-### Contributing
-
-This app uses `pre-commit` for code formatting and linting. Please [install pre-commit](https://pre-commit.com/#installation) and enable it for this repository:
-
-```bash
-cd apps/accounts_manager
-pre-commit install
-```
-
-Pre-commit is configured to use the following tools for checking and formatting your code:
-
-- ruff
-- eslint
-- prettier
-- pyupgrade
-
-### CI
-
-This app can use GitHub Actions for CI. The following workflows are configured:
-
-- CI: Installs this app and runs unit tests on every push to `develop` branch.
-- Linters: Runs [Frappe Semgrep Rules](https://github.com/frappe/semgrep-rules) and [pip-audit](https://pypi.org/project/pip-audit/) on every pull request.
-
-
-### License
-
-mit
->>>>>>> da6c369 (feat: Initialize App)
